@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EmailServiceAPI.Tests/EmailServiceAPI.Tests.csproj" />
+  <Project Path="EmailServiceAPI/EmailServiceAPI.csproj" />
+</Solution>

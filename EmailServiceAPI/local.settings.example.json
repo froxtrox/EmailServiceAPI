@@ -1,0 +1,14 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+        "ACS_ENDPOINT": "",
+        "SENDER_EMAIL": "",
+        "RECIPIENT_EMAIL": ""
+    },
+    "Host": {
+        "CORS": "http://localhost:4200",
+        "CORSCredentials": false
+    }
+}

@@ -1,0 +1,124 @@
+## .NET / Visual Studio
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+artifacts/
+
+# Visual Studio
+.vs/
+*.csproj.user
+*.rsuser
+*.sln.iml
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.VisualState.xml
+TestResult.xml
+coverage*/
+
+# Build artifacts
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# Publish
+publish/
+*.[Pp]ublish.xml
+*.azurePubxml
+*.publishproj
+PublishScripts/
+
+# Azure Functions
+local.settings.json
+
+# JetBrains Rider
+.idea/
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# Cache
+*.[Cc]ache
+!*.[Cc]ache/
+
+# Misc
+~$*
+*~
+*.pfx
+*.publishsettings
+node_modules/
+
+## Terraform
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/*.tfplan
+infra/tfplan
+infra/.terraform.lock.hcl
+infra/crash.log
+infra/crash.*.log
+infra/override.tf
+infra/override.tf.json
+infra/*_override.tf
+infra/*_override.tf.json
+
+# Terraform secret/variable files (may contain passwords, keys, connection strings)
+infra/terraform.tfvars
+infra/*.auto.tfvars
+infra/backend.conf
+
+## OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
