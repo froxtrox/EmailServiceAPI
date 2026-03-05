@@ -4,7 +4,7 @@ An Azure Functions API for sending emails via Azure Communication Services.
 
 ## Tech Stack
 
-- **.NET 10**
+- **.NET 8**
 - **Azure Functions v4** (isolated worker model)
 - **Azure Communication Services** (Email)
 - **Terraform** (infrastructure)
@@ -21,7 +21,7 @@ infra/                    # Terraform infrastructure
 
 ### Prerequisites
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download)
 - [Azure Functions Core Tools v4](https://learn.microsoft.com/azure/azure-functions/functions-run-local)
 - [Terraform](https://developer.hashicorp.com/terraform/install)
 
