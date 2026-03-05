@@ -13,10 +13,10 @@ public class ContactFunction
 {
     private readonly IEmailService _emailService;
     private readonly ILogger<ContactFunction> _logger;
-    private readonly RateLimiter _rateLimiter;
+    private readonly InMemoryRateLimiter _rateLimiter;
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
-    public ContactFunction(IEmailService emailService, ILogger<ContactFunction> logger, RateLimiter rateLimiter)
+    public ContactFunction(IEmailService emailService, ILogger<ContactFunction> logger, InMemoryRateLimiter rateLimiter)
     {
         _emailService = emailService;
         _logger = logger;
@@ -35,7 +35,7 @@ public class ContactFunction
         if (!allowed)
         {
             req.HttpContext.Response.Headers["Retry-After"] = retryAfter.ToString();
-            return new ObjectResult(new { error = "Too many requests. Please try again later." })
+            return new ObjectResult("Too many requests. Please try again later.")
             {
                 StatusCode = StatusCodes.Status429TooManyRequests
             };
@@ -46,17 +46,17 @@ public class ContactFunction
         {
             request = await JsonSerializer.DeserializeAsync<ContactFormRequest>(req.Body, JsonOptions);
             if (request is null)
-                return new BadRequestObjectResult(new { error = "Invalid request body." });
+                return new BadRequestObjectResult("Invalid request body.");
         }
         catch (JsonException)
         {
-            return new BadRequestObjectResult(new { error = "Invalid JSON format." });
+            return new BadRequestObjectResult("Invalid JSON format.");
         }
 
         if (!string.IsNullOrEmpty(request.Website))
         {
             _logger.LogWarning("Honeypot triggered from IP: {Ip}", ip);
-            return new OkObjectResult(new { message = "Message sent successfully." });
+            return new OkObjectResult("Message sent successfully.");
         }
 
         var validationResults = new List<ValidationResult>();
@@ -70,7 +70,7 @@ public class ContactFunction
         try
         {
             await _emailService.SendContactEmailAsync(request);
-            return new OkObjectResult(new { message = "Message sent successfully." });
+            return new OkObjectResult("Message sent successfully.");
         }
         catch (Exception ex)
         {

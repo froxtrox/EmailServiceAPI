@@ -1,8 +1,9 @@
 using System.Collections.Concurrent;
+using EmailServiceAPI.Services.Interfaces;
 
 namespace EmailServiceAPI.Services;
 
-public class RateLimiter : IDisposable
+public class InMemoryRateLimiter : IDisposable, IRateLimiter
 {
     private readonly TimeProvider _timeProvider;
     private readonly ConcurrentDictionary<string, RateLimitEntry> _entries = new();
@@ -12,7 +13,7 @@ public class RateLimiter : IDisposable
     private static readonly TimeSpan Window = TimeSpan.FromMinutes(15);
     private static readonly TimeSpan CleanupInterval = TimeSpan.FromMinutes(5);
 
-    public RateLimiter(TimeProvider timeProvider)
+    public InMemoryRateLimiter(TimeProvider timeProvider)
     {
         _timeProvider = timeProvider;
         _cleanupTimer = _timeProvider.CreateTimer(_ => Cleanup(), null, CleanupInterval, CleanupInterval);

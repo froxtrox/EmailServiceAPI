@@ -13,7 +13,7 @@ public class ContactFunctionTests : IDisposable
 {
     private readonly Mock<IEmailService> _mockEmailService;
     private readonly Mock<ILogger<ContactFunction>> _mockLogger;
-    private readonly RateLimiter _rateLimiter;
+    private readonly InMemoryRateLimiter _rateLimiter;
     private readonly ContactFunction _function;
 
     public ContactFunctionTests()
@@ -30,7 +30,7 @@ public class ContactFunctionTests : IDisposable
             It.IsAny<TimeSpan>()))
             .Returns(Mock.Of<ITimer>());
 
-        _rateLimiter = new RateLimiter(mockTimeProvider.Object);
+        _rateLimiter = new InMemoryRateLimiter(mockTimeProvider.Object);
         _function = new ContactFunction(_mockEmailService.Object, _mockLogger.Object, _rateLimiter);
     }
 

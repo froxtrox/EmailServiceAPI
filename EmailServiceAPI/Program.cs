@@ -37,7 +37,7 @@ var host = new HostBuilder()
             return new EmailClient(new Uri(endpoint), new DefaultAzureCredential());
         });
         s.AddSingleton<IEmailService, EmailService>();
-        s.AddSingleton<RateLimiter>();
+        s.AddSingleton<InMemoryRateLimiter>();
         s.AddSingleton(TimeProvider.System);
     })
     .Build();

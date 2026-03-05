@@ -3,13 +3,13 @@ using Moq;
 
 namespace EmailServiceAPI.Tests.Services;
 
-public class RateLimiterTests : IDisposable
+public class InMemoryRateLimiterTests : IDisposable
 {
     private readonly Mock<TimeProvider> _mockTimeProvider;
-    private readonly RateLimiter _rateLimiter;
+    private readonly InMemoryRateLimiter _rateLimiter;
     private DateTimeOffset _currentTime = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-    public RateLimiterTests()
+    public InMemoryRateLimiterTests()
     {
         _mockTimeProvider = new Mock<TimeProvider>();
         _mockTimeProvider.Setup(tp => tp.GetUtcNow()).Returns(() => _currentTime);
@@ -20,7 +20,7 @@ public class RateLimiterTests : IDisposable
             It.IsAny<TimeSpan>()))
             .Returns(Mock.Of<ITimer>());
 
-        _rateLimiter = new RateLimiter(_mockTimeProvider.Object);
+        _rateLimiter = new InMemoryRateLimiter(_mockTimeProvider.Object);
     }
 
     [Fact]
