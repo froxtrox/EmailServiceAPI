@@ -98,25 +98,6 @@ nCrunchTemp_*
 *.publishsettings
 node_modules/
 
-## Terraform
-infra/.terraform/
-infra/*.tfstate
-infra/*.tfstate.*
-infra/*.tfplan
-infra/tfplan
-infra/.terraform.lock.hcl
-infra/crash.log
-infra/crash.*.log
-infra/override.tf
-infra/override.tf.json
-infra/*_override.tf
-infra/*_override.tf.json
-
-# Terraform secret/variable files (may contain passwords, keys, connection strings)
-infra/terraform.tfvars
-infra/*.auto.tfvars
-infra/backend.conf
-
 ## OS
 Thumbs.db
 ehthumbs.db
