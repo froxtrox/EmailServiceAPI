@@ -11,14 +11,14 @@ namespace EmailServiceAPI.Tests.Functions;
 
 public class ContactFunctionTests : IDisposable
 {
-    private readonly Mock<IEmailService> _mockEmailService;
+    private readonly Mock<IEmailOutbox> _mockOutbox;
     private readonly Mock<ILogger<ContactFunction>> _mockLogger;
     private readonly InMemoryRateLimiter _rateLimiter;
     private readonly ContactFunction _function;
 
     public ContactFunctionTests()
     {
-        _mockEmailService = new Mock<IEmailService>();
+        _mockOutbox = new Mock<IEmailOutbox>();
         _mockLogger = new Mock<ILogger<ContactFunction>>();
 
         var mockTimeProvider = new Mock<TimeProvider>();
@@ -31,7 +31,7 @@ public class ContactFunctionTests : IDisposable
             .Returns(Mock.Of<ITimer>());
 
         _rateLimiter = new InMemoryRateLimiter(mockTimeProvider.Object);
-        _function = new ContactFunction(_mockEmailService.Object, _mockLogger.Object, _rateLimiter);
+        _function = new ContactFunction(_mockOutbox.Object, _mockLogger.Object, _rateLimiter);
     }
 
     private static HttpRequest CreateRequest(object? body = null, string contentType = "application/json", string ip = "127.0.0.1")
@@ -104,7 +104,7 @@ public class ContactFunctionTests : IDisposable
     }
 
     [Fact]
-    public async Task Honeypot_Triggered_Returns_200_Without_Sending_Email()
+    public async Task Honeypot_Triggered_Returns_200_Without_Enqueuing()
     {
         var body = new
         {
@@ -121,7 +121,9 @@ public class ContactFunctionTests : IDisposable
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okResult.StatusCode);
-        _mockEmailService.Verify(x => x.SendContactEmailAsync(It.IsAny<ContactFormRequest>()), Times.Never);
+        _mockOutbox.Verify(
+            x => x.EnqueueAsync(It.IsAny<ContactFormRequest>(), It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 
     [Fact]
@@ -181,21 +183,24 @@ public class ContactFunctionTests : IDisposable
     }
 
     [Fact]
-    public async Task Valid_Submission_Returns_200_And_Sends_Email()
+    public async Task Valid_Submission_Returns_200_And_Enqueues()
     {
         var req = CreateRequest(CreateValidBody());
         var result = await _function.Run(req);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(200, okResult.StatusCode);
-        _mockEmailService.Verify(x => x.SendContactEmailAsync(It.IsAny<ContactFormRequest>()), Times.Once);
+        _mockOutbox.Verify(
+            x => x.EnqueueAsync(It.IsAny<ContactFormRequest>(), It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 
     [Fact]
-    public async Task Email_Service_Throws_Returns_500()
+    public async Task Outbox_Throws_Returns_500()
     {
-        _mockEmailService.Setup(x => x.SendContactEmailAsync(It.IsAny<ContactFormRequest>()))
-            .ThrowsAsync(new Exception("Email send failed"));
+        _mockOutbox
+            .Setup(x => x.EnqueueAsync(It.IsAny<ContactFormRequest>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new Exception("Enqueue failed"));
 
         var req = CreateRequest(CreateValidBody());
         var result = await _function.Run(req);

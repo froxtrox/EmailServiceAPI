@@ -4,6 +4,7 @@ using Azure.Communication.Email;
 using EmailServiceAPI.Models;
 using EmailServiceAPI.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace EmailServiceAPI.Tests.Services;
@@ -32,7 +33,7 @@ public class EmailServiceTests
             })
             .Build();
 
-        _emailService = new EmailService(_mockEmailClient.Object, _configuration);
+        _emailService = new EmailService(_mockEmailClient.Object, _configuration, Mock.Of<ILogger<EmailService>>());
     }
 
     private static ContactFormRequest CreateValidRequest() => new()
@@ -142,7 +143,7 @@ public class EmailServiceTests
             .Build();
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            new EmailService(_mockEmailClient.Object, config));
+            new EmailService(_mockEmailClient.Object, config, Mock.Of<ILogger<EmailService>>()));
         Assert.Contains("SENDER_EMAIL", ex.Message);
     }
 
@@ -157,7 +158,7 @@ public class EmailServiceTests
             .Build();
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
-            new EmailService(_mockEmailClient.Object, config));
+            new EmailService(_mockEmailClient.Object, config, Mock.Of<ILogger<EmailService>>()));
         Assert.Contains("RECIPIENT_EMAIL", ex.Message);
     }
 }

@@ -11,14 +11,14 @@ namespace EmailServiceAPI;
 
 public class ContactFunction
 {
-    private readonly IEmailService _emailService;
+    private readonly IEmailOutbox _outbox;
     private readonly ILogger<ContactFunction> _logger;
     private readonly InMemoryRateLimiter _rateLimiter;
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
-    public ContactFunction(IEmailService emailService, ILogger<ContactFunction> logger, InMemoryRateLimiter rateLimiter)
+    public ContactFunction(IEmailOutbox outbox, ILogger<ContactFunction> logger, InMemoryRateLimiter rateLimiter)
     {
-        _emailService = emailService;
+        _outbox = outbox;
         _logger = logger;
         _rateLimiter = rateLimiter;
     }
@@ -69,12 +69,12 @@ public class ContactFunction
 
         try
         {
-            await _emailService.SendContactEmailAsync(request);
+            await _outbox.EnqueueAsync(request);
             return new OkObjectResult("Message sent successfully.");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to send contact email");
+            _logger.LogError(ex, "Failed to enqueue contact email");
             return new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
